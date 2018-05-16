@@ -61,6 +61,13 @@ public class Terminal {
 		
 	}*/
 	
+	public boolean HasMultiple() {
+		if (active == null) {
+			return false;
+		}
+		return userAccounts.get(active).Count() > 1;
+	}
+	
 	public String ViewBalance() {
 		return userAccounts.get(active).getBalance();
 	}

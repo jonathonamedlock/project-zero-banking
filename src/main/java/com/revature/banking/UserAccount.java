@@ -50,4 +50,8 @@ public class UserAccount {
 		}
 		return accounts.get(0).getHistory();
 	}
+
+	public int Count() {
+		return accounts.size();
+	}
 }
