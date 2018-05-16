@@ -1,16 +1,17 @@
 package com.revature.banking;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Terminal {
-	private Map<User, Account> userAccounts;
+	private Map<User, UserAccount> userAccounts;
 	private User active;
 	
 	public Terminal() {
 		// this is where start-up code goes.
 		// so this is the read-from-file logic
-		userAccounts = new HashMap<User, Account>();
+		userAccounts = new HashMap<>();
 	}
 	
 	public boolean LogIn(String name, String password) {
@@ -38,7 +39,7 @@ public class Terminal {
 		if (password != null && password.equals(confirm)) {
 			User toAdd = new User(name, password);
 			if (!userAccounts.containsKey(toAdd)) {
-				userAccounts.put(toAdd, new Account());
+				userAccounts.put(toAdd, new UserAccount(toAdd, new Account()));
 				return true;
 			}
 		}
@@ -49,7 +50,7 @@ public class Terminal {
 		if (password != null && password.equals(confirm)) {
 			User toAdd = new User(name, password);
 			if (!userAccounts.containsKey(toAdd)) {
-				userAccounts.put(toAdd, new Account(balance));
+				userAccounts.put(toAdd, new UserAccount(toAdd, new Account(balance)));
 				return true;
 			}
 		}
@@ -60,7 +61,7 @@ public class Terminal {
 		
 	}*/
 	
-	public double ViewBalance() {
+	public String ViewBalance() {
 		return userAccounts.get(active).getBalance();
 	}
 	
@@ -77,5 +78,16 @@ public class Terminal {
 			return false;
 		}
 		return userAccounts.get(active).Withdraw(amount);
+	}
+	
+	public List<Transaction> TransactionHistory() {
+		return userAccounts.get(active).getHistory();
+	}
+	
+	public List<Transaction> TransactionHistory(String username) {
+		if (!active.isAdmin()) {
+			return null;
+		}
+		return userAccounts.get(new User(username, "")).getHistory();
 	}
 }

@@ -33,9 +33,9 @@ public class TestTerminal {
 		t.NewUser("User1", "Password1", "Password1");
 		t.NewUser("User2", "Password2", "Password2", 300);
 		t.LogIn("User1", "Password1");
-		assertEquals(new Double(0), new Double(t.ViewBalance()));
+		assertEquals("0.0", t.ViewBalance());
 		t.LogIn("User2", "Password2");
-		assertEquals(new Double(300), new Double(t.ViewBalance()));
+		assertEquals("300.0", t.ViewBalance());
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class TestTerminal {
 		assertTrue(t.Withdraw(0));
 		assertFalse(t.Withdraw(-1));
 		assertFalse(t.Withdraw(-.5));
-		assertEquals(new Double(98.5), new Double(t.ViewBalance()));
+		assertEquals("98.5", t.ViewBalance());
 	}
 	
 	@Test
@@ -61,6 +61,6 @@ public class TestTerminal {
 		assertTrue(t.Deposit(0));
 		assertFalse(t.Deposit(-1));
 		assertFalse(t.Deposit(-.5));
-		assertEquals(new Double(101.5), new Double(t.ViewBalance()));
+		assertEquals("101.5", t.ViewBalance());
 	}
 }
