@@ -92,4 +92,8 @@ public class User implements Serializable {
 	public void addAccount(Account newAccount) {
 		accounts.add(newAccount);
 	}
+
+	public void Promote() {
+		admin = true;
+	}
 }

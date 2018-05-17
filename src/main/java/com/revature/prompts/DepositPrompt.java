@@ -5,7 +5,7 @@ import java.util.Scanner;
 import com.revature.banking.Terminal;
 
 public class DepositPrompt implements Prompt {
-	public static final DepositPrompt DEPOSIT = new DepositPrompt();
+	private static final DepositPrompt DEPOSIT = new DepositPrompt();
 	
 	private DepositPrompt() {
 	}

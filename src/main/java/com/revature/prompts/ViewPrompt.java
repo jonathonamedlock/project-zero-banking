@@ -5,7 +5,7 @@ import java.util.Scanner;
 import com.revature.banking.Terminal;
 
 public class ViewPrompt implements Prompt {
-	public static final ViewPrompt VIEW = new ViewPrompt();
+	private static final ViewPrompt VIEW = new ViewPrompt();
 	
 	private ViewPrompt() {
 	}
@@ -19,7 +19,11 @@ public class ViewPrompt implements Prompt {
 		System.out.print("View history of which user: ");
 		String user = s.nextLine();
 		if (!t.HasMultiple(user)) {
-			
+			System.out.println(t.TransactionHistory(user));
+		} else {
+			SelectorPrompt.getInstance().SelectAccount(t, s, user);
+			System.out.println(t.TransactionHistory(user, SelectorPrompt.getInstance().getActive()));
+			SelectorPrompt.getInstance().clear();
 		}
 		return MainMenuPrompt.getInstance();
 	}

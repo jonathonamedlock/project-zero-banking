@@ -31,6 +31,21 @@ public class Transaction implements Serializable{
 	}
 
 	@Override
+	public String toString() {
+		StringBuilder history = new StringBuilder();
+		if (isDeposit) {
+			history.append("D");
+		} else {
+			history.append("W");
+		}
+		history.append('\t');
+		history.append(String.format("%.2f", before));
+		history.append("\t\t");
+		history.append(String.format("%.2f", after));
+		return history.toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

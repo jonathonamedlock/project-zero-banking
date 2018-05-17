@@ -6,7 +6,7 @@ import com.revature.banking.Terminal;
 
 public class MainMenuPrompt implements Prompt{
 	
-	public static final MainMenuPrompt MAIN_MENU = new MainMenuPrompt();
+	private static final MainMenuPrompt MAIN_MENU = new MainMenuPrompt();
 	
 	private MainMenuPrompt() {
 	}
@@ -34,6 +34,7 @@ public class MainMenuPrompt implements Prompt{
 			//if C
 			case "C":
 				//Format and display balance
+				System.out.println(t.ViewBalance());
 				return MainMenuPrompt.getInstance();
 			//if V
 			case "V":
@@ -42,11 +43,20 @@ public class MainMenuPrompt implements Prompt{
 					System.out.println(t.TransactionHistory());
 					return MainMenuPrompt.getInstance();
 				} else {
-					// return SelectAccountHistoryPrompt.getInstance();
+					SelectorPrompt.getInstance().SelectAccount(t, s);
+					System.out.println(t.TransactionHistory(SelectorPrompt.getInstance().getActive()));
+					SelectorPrompt.getInstance().clear();
+					return MainMenuPrompt.getInstance();
 				}
 			//if A
 			case "A":
-				// return NewAccountPrompt.getInstance();
+				String newAccountNumber = t.AddAccount();
+				if (newAccountNumber != null) {
+					System.out.println("Created new account for " + t.getActive().getUsername() + " with account number " + newAccountNumber);
+				} else {
+					System.err.println("Error creating new account");
+				}
+				return MainMenuPrompt.getInstance();
 			//if X
 			case "X":
 				return LoginRegisterPrompt.getInstance();
@@ -58,14 +68,14 @@ public class MainMenuPrompt implements Prompt{
 			//if U
 			case "U":
 				if (t.getActive().isAdmin()) {
-					// return AddUserToAccountPrompt.getInstance();
+					return AddUserToAccountPrompt.getInstance();
 				}
 			case "P":
 				if (t.getActive().isAdmin()) {
-					// return PromoteUserPrompt.getInstance();
+					return PromoteUserPrompt.getInstance();
 				}
 			default:
-				System.out.println("Incorrect selection. Please try again.");
+				System.out.println("Invalid selection. Please try again.");
 				return MainMenuPrompt.getInstance();
 		}
 	}

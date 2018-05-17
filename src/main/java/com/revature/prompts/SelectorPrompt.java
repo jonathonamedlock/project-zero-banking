@@ -7,13 +7,13 @@ import com.revature.banking.Terminal;
 public class SelectorPrompt {
 	private long active;
 	
-	private static SelectorPrompt instance = new SelectorPrompt();
+	private static SelectorPrompt SELECTOR = new SelectorPrompt();
 	
 	private SelectorPrompt() {
 	}
 	
 	public static SelectorPrompt getInstance() {
-		return instance;
+		return SELECTOR;
 	}
 	
 	public void SelectAccount(Terminal t, Scanner s) {

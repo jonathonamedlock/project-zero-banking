@@ -6,7 +6,7 @@ import com.revature.banking.Terminal;
 
 public class LoginRegisterPrompt implements Prompt {
 	
-	public static final LoginRegisterPrompt LOGIN_REGISTER = new LoginRegisterPrompt();
+	private static final LoginRegisterPrompt LOGIN_REGISTER = new LoginRegisterPrompt();
 	
 	private LoginRegisterPrompt() {
 	}

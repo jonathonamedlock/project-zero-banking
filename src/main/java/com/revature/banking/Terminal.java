@@ -70,9 +70,28 @@ public class Terminal {
 		return false;
 	}
 	
-	/*public void AddAccount(int type) {
+	public void AddUserToAccount(long account, String username) {
+		Account theAccount = null;
+		for (Account a : userAccounts.keySet()) {
+			if (a.getAccountNumber() == account) {
+				theAccount = a;
+				break;
+			}
+		}
+		User user = users.get(new User(username, ""));
 		
-	}*/
+		userAccounts.get(theAccount).add(user);
+		user.addAccount(theAccount);
+	}
+	
+	public String AddAccount() {
+		Account theAccount = new Account();
+		List<User> userList = new ArrayList<User>();
+		userList.add(active);
+		userAccounts.put(theAccount, userList);
+		active.addAccount(theAccount);
+		return Long.toString(theAccount.getAccountNumber());
+	}
 	
 	public boolean HasMultiple() {
 		if (active == null) {
@@ -86,7 +105,14 @@ public class Terminal {
 	}
 	
 	public String ViewBalance() {
-		return Double.toString(active.getAccount(0).getBalance());
+		if (active.AccountCount() == 1) {
+			return String.format("%.2f", active.getAccount(0).getBalance());
+		}
+		StringBuilder accountData = new StringBuilder();
+		for (int i = 0; i < active.AccountCount(); i++) {
+			accountData.append(active.getAccount(i).getAccountNumber() + ": " + String.format("%.2f", active.getAccount(i).getBalance()) + "\n");
+		}
+		return accountData.toString();
 	}
 	
 	public boolean Deposit(double amount) {
@@ -110,6 +136,7 @@ public class Terminal {
 	public String TransactionHistory(long accountNumber) {
 		List<Transaction> trans = active.getAccount(accountNumber).getHistory();
 		StringBuilder history = new StringBuilder();
+		history.append("D/W\tPrevious\tAfter\n");
 		for (Transaction t : trans) {
 			history.append(t.toString() + "\n");
 		}
@@ -135,5 +162,24 @@ public class Terminal {
 			return null;
 		}
 		return users.get(new User(user,"")).getAccountNumbers();
+	}
+
+	public boolean ValidAccount(long number) {
+		for (Account a : userAccounts.keySet()) {
+			if (a.getAccountNumber() == number) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean ValidUser(String user) {
+		return users.containsKey(new User(user, ""));
+	}
+
+	public void PromoteUser(String user) {
+		if (active.isAdmin()) {
+			users.get(new User(user, "")).Promote();
+		}
 	}
 }

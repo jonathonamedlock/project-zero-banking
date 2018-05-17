@@ -5,7 +5,7 @@ import java.util.Scanner;
 import com.revature.banking.Terminal;
 
 public class WithdrawPrompt implements Prompt {
-	public static final WithdrawPrompt WITHDRAW = new WithdrawPrompt();
+	private static final WithdrawPrompt WITHDRAW = new WithdrawPrompt();
 	
 	private WithdrawPrompt() {
 	}
@@ -33,7 +33,7 @@ public class WithdrawPrompt implements Prompt {
 			if (!t.getActive().getAccount(SelectorPrompt.getInstance().getActive()).Withdraw(amount)) {
 				System.out.println("Error withdrawing. Either attempted amount was negative or the total funds were insufficient.");
 			} else {
-				System.out.println("Deposit success.");
+				System.out.println("Withdraw success.");
 			}
 			SelectorPrompt.getInstance().clear();
 		}

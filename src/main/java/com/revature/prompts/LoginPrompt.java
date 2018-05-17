@@ -6,7 +6,7 @@ import com.revature.banking.Terminal;
 
 public class LoginPrompt implements Prompt {
 
-	public static final LoginPrompt LOGIN = new LoginPrompt();
+	private static final LoginPrompt LOGIN = new LoginPrompt();
 	
 	private LoginPrompt() {
 	}
