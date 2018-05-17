@@ -1,21 +1,24 @@
 package com.revature.banking;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Terminal {
-	private Map<User, UserAccount> userAccounts;
-	private User active;
+	private Map<Account, List<User>> userAccounts;
+	private Map<User,User> users;
+	private User active;	
 	
 	public Terminal() {
 		// this is where start-up code goes.
 		// so this is the read-from-file logic
 		userAccounts = new HashMap<>();
+		users = new HashMap<>();
 	}
 	
 	public boolean LogIn(String name, String password) {
-		for (User u: userAccounts.keySet()) {
+		for (User u: users.keySet()) {
 			if (u.getUsername().equals(name)) {
 				if (u.CheckPassword(password)) {
 					setActive(u);
@@ -38,8 +41,13 @@ public class Terminal {
 	public boolean NewUser(String name, String password, String confirm) {
 		if (password != null && password.equals(confirm)) {
 			User toAdd = new User(name, password);
-			if (!userAccounts.containsKey(toAdd)) {
-				userAccounts.put(toAdd, new UserAccount(toAdd, new Account()));
+			if (!users.containsKey(toAdd)) {
+				users.put(toAdd, toAdd);
+				List<User> userList = new ArrayList<>();
+				userList.add(toAdd);
+				Account newAccount = new Account();
+				toAdd.addAccount(newAccount);
+				userAccounts.put(newAccount, userList);
 				return true;
 			}
 		}
@@ -49,8 +57,13 @@ public class Terminal {
 	public boolean NewUser(String name, String password, String confirm, double balance) {
 		if (password != null && password.equals(confirm)) {
 			User toAdd = new User(name, password);
-			if (!userAccounts.containsKey(toAdd)) {
-				userAccounts.put(toAdd, new UserAccount(toAdd, new Account(balance)));
+			if (!users.containsKey(toAdd)) {
+				users.put(toAdd, toAdd);
+				List<User> userList = new ArrayList<>();
+				userList.add(toAdd);
+				Account newAccount = new Account(balance);
+				toAdd.addAccount(newAccount);
+				userAccounts.put(newAccount, userList);
 				return true;
 			}
 		}
@@ -65,36 +78,62 @@ public class Terminal {
 		if (active == null) {
 			return false;
 		}
-		return userAccounts.get(active).Count() > 1;
+		return active.AccountCount() > 1;
+	}
+	
+	public boolean HasMultiple(String user) {
+		return users.get(new User(user,"")).AccountCount() > 1;
 	}
 	
 	public String ViewBalance() {
-		return userAccounts.get(active).getBalance();
+		return Double.toString(active.getAccount(0).getBalance());
 	}
 	
 	public boolean Deposit(double amount) {
 		if (amount < 0.0) {
 			return false;
 		}
-		userAccounts.get(active).Deposit(amount);
-		return true;
+		return active.getAccount(0).Deposit(amount);
 	}
 	
 	public boolean Withdraw(double amount) {
 		if (amount < 0.0) {
 			return false;
 		}
-		return userAccounts.get(active).Withdraw(amount);
+		return active.getAccount(0).Withdraw(amount);
 	}
 	
-	public List<Transaction> TransactionHistory() {
-		return userAccounts.get(active).getHistory();
+	public String TransactionHistory() {
+		return TransactionHistory(active.getAccount(0).getAccountNumber());
 	}
 	
-	public List<Transaction> TransactionHistory(String username) {
+	public String TransactionHistory(long accountNumber) {
+		List<Transaction> trans = active.getAccount(accountNumber).getHistory();
+		StringBuilder history = new StringBuilder();
+		for (Transaction t : trans) {
+			history.append(t.toString() + "\n");
+		}
+		return history.toString();
+	}
+	
+	public String TransactionHistory(String username) {
 		if (!active.isAdmin()) {
 			return null;
 		}
-		return userAccounts.get(new User(username, "")).getHistory();
+		return TransactionHistory(users.get(new User(username, "")).getAccount(0).getAccountNumber());
+	}
+	
+	public String TransactionHistory(String username, long accountNumber) {
+		if (!active.isAdmin()) {
+			return null;
+		}
+		return TransactionHistory(users.get(new User(username, "")).getAccount(accountNumber).getAccountNumber());
+	}
+	
+	public String getAccountNumbersForUser(String user, User u) {
+		if (!u.isAdmin()) {
+			return null;
+		}
+		return users.get(new User(user,"")).getAccountNumbers();
 	}
 }

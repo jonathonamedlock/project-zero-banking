@@ -1,8 +1,13 @@
 package com.revature.banking;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Account implements Serializable{
 	/**
@@ -12,6 +17,28 @@ public class Account implements Serializable{
 	private double balance;
 	private AccountType type;
 	private List<Transaction> history;
+	
+	static final AtomicLong NEXT_ID;
+	
+	static {
+		long l = 0;
+		// open file, read current id number from the file
+		try (BufferedReader buff = new BufferedReader(new FileReader("accID.txt"))) {
+			l = Long.parseLong(buff.readLine());
+			buff.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		} 
+		NEXT_ID = new AtomicLong(l);
+	}
+	
+	private final long id = NEXT_ID.getAndIncrement();
+		
+	public long getAccountNumber() {
+		return id;
+	}
 	
 	public Account(double funds, AccountType type) {
 		balance = funds;
@@ -55,11 +82,7 @@ public class Account implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(balance);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((history == null) ? 0 : history.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
 		return result;
 	}
 
@@ -72,14 +95,7 @@ public class Account implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Account other = (Account) obj;
-		if (Double.doubleToLongBits(balance) != Double.doubleToLongBits(other.balance))
-			return false;
-		if (history == null) {
-			if (other.history != null)
-				return false;
-		} else if (!history.equals(other.history))
-			return false;
-		if (type != other.type)
+		if (id != other.id)
 			return false;
 		return true;
 	}

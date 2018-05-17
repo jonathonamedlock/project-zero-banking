@@ -18,7 +18,9 @@ public class ViewPrompt implements Prompt {
 	public Prompt run(Terminal t, Scanner s) {
 		System.out.print("View history of which user: ");
 		String user = s.nextLine();
-		// t.getTransactionHistory(user); should return a string, or null if not found.
+		if (!t.HasMultiple(user)) {
+			
+		}
 		return MainMenuPrompt.getInstance();
 	}
 }

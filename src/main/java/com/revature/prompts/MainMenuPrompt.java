@@ -19,7 +19,7 @@ public class MainMenuPrompt implements Prompt{
 	public Prompt run(Terminal t, Scanner s) {
 		System.out.print("(D)eposit, (W)ithdraw, (C)heck balance, (V)iew history, (A)dd new account, e(X)it");
 		if (t.getActive().isAdmin()) {
-			System.out.print("\nv(I)ew a user's history, add (U)ser to existing account: ");
+			System.out.print("\nv(I)ew a user's history, add (U)ser to existing account, (P)romote user to admin: ");
 		} else {
 			System.out.print(": ");
 		}
@@ -37,8 +37,13 @@ public class MainMenuPrompt implements Prompt{
 				return MainMenuPrompt.getInstance();
 			//if V
 			case "V":
-				//Format and display the history
-				return MainMenuPrompt.getInstance();
+				if (t.getActive().AccountCount() == 1) {
+					//Format and display the history
+					System.out.println(t.TransactionHistory());
+					return MainMenuPrompt.getInstance();
+				} else {
+					// return SelectAccountHistoryPrompt.getInstance();
+				}
 			//if A
 			case "A":
 				// return NewAccountPrompt.getInstance();
@@ -53,7 +58,11 @@ public class MainMenuPrompt implements Prompt{
 			//if U
 			case "U":
 				if (t.getActive().isAdmin()) {
-					// return AddUserToAccount.getInstance();
+					// return AddUserToAccountPrompt.getInstance();
+				}
+			case "P":
+				if (t.getActive().isAdmin()) {
+					// return PromoteUserPrompt.getInstance();
 				}
 			default:
 				System.out.println("Incorrect selection. Please try again.");
