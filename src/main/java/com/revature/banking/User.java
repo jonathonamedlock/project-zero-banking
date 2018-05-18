@@ -21,6 +21,12 @@ public class User implements Serializable {
 		accounts = new ArrayList<>();
 	}
 
+	public static User GetAdmin() {
+		User administrator = new User("admin", "password");
+		administrator.admin = true;
+		return administrator;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -41,8 +47,6 @@ public class User implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (admin ? 1231 : 1237);
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}

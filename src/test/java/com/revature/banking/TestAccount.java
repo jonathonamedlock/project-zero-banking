@@ -20,8 +20,8 @@ public class TestAccount {
 		Account t4 = new Account(3.50, AccountType.CHECKING);
 		Account t5 = new Account(3.50, AccountType.SAVINGS);
 		
-		assertEquals(t1, t2);
-		assertEquals(t2, t3);
+		assertNotEquals(t1, t2);
+		assertNotEquals(t2, t3);
 		assertNotEquals(t1, t4);
 		assertNotEquals(t4, t5);
 	}
@@ -65,4 +65,5 @@ public class TestAccount {
 		
 		assertEquals(history, t1.getHistory());
 	}
+	
 }

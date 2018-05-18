@@ -30,7 +30,7 @@ public class DepositPrompt implements Prompt {
 				System.out.println("Account with that number not found.");
 				return DepositPrompt.getInstance();
 			}
-			if (!t.getActive().getAccount(SelectorPrompt.getInstance().getActive()).Deposit(amount)) {
+			if (!t.Deposit(amount, SelectorPrompt.getInstance().getActive())) {
 				System.out.println("Error depositing. Attempted amount was negative.");
 			} else {
 				System.out.println("Deposit success.");

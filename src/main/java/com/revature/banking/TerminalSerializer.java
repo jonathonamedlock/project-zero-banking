@@ -1,49 +1,92 @@
 package com.revature.banking;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class TerminalSerializer{
-	public static final TerminalSerializer serializer = new TerminalSerializer();
-		
-	private TerminalSerializer() {}
+	private static final TerminalSerializer serializer = new TerminalSerializer();
+	private Map<User, User> users;
+	private Map<Account, List<User>> accounts;
 	
-	public void SaveUser(Set<User> users) {
-		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("userList.txt"))) {
-			for (User u : users) {
-				out.writeObject(u);
+	private TerminalSerializer() {
+		users = new HashMap<>();
+		accounts = new HashMap<>();
+	}
+	
+	public static TerminalSerializer getInstance() {
+		return serializer;
+	}
+	
+	public void WriteUsers(Map<User,User> users) {
+		if (!new File("users.txt").exists()) {
+			try {
+				new File("users.txt").createNewFile();
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+		}
+		try(ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream("users.txt"))) {
+			writer.writeInt(users.size());
+			for (User u : users.keySet()) {
+				writer.writeObject(u);
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 	
-	public void SaveAccount(Map<User, List<Account> > accounts) {
-		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("accountList.txt"))) {
-			
+	public void Read() {
+		if (!new File("users.txt").exists()) {
+			try {
+				new File("users.txt").createNewFile();
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+			users = null;
+			accounts = null;
+			return;
+		}
+		try(ObjectInputStream reader = new ObjectInputStream(new FileInputStream("users.txt"))) {
+			int count = reader.readInt();
+			for (int i = 0; i < count; i++) {
+				User u = (User) reader.readObject();
+				users.put(u, u);
+				for (int j = 0; j < u.AccountCount(); j++) {
+					if (!accounts.containsKey(u.getAccount(j))) {
+						accounts.put(u.getAccount(j), new ArrayList<User>());
+					}
+					accounts.get(u.getAccount(j)).add(u);
+				}
+			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if (users.size() == 0) {
+				users = null;
+				accounts = null;
+			}
+			// System.err.println(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			System.err.println(e.getMessage());
 		}
 	}
 	
-	public User ReadUser() {
-		return null;
+	public Map<Account, List<User>> getUserAccounts() {
+		return accounts;
 	}
 	
-	public Account ReadAccount() {
-		return null;
+	public Map<User, User> getUsers() {
+		return users;
 	}
 }

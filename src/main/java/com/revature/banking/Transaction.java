@@ -1,6 +1,7 @@
 package com.revature.banking;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class Transaction implements Serializable{
 	/**
@@ -10,12 +11,41 @@ public class Transaction implements Serializable{
 	private boolean isDeposit;
 	private double before;
 	private double after;
+	private LocalDateTime time;
+	private String byUser;
 	
+	public LocalDateTime getTime() {
+		return time;
+	}
+
+	public void setTime(LocalDateTime time) {
+		this.time = time;
+	}
+
+	public void setDeposit(boolean isDeposit) {
+		this.isDeposit = isDeposit;
+	}
+
+	public void setBefore(double before) {
+		this.before = before;
+	}
+
+	public void setAfter(double after) {
+		this.after = after;
+	}
+
 	public Transaction(boolean isDeposit, double before, double after) {
 		super();
 		this.isDeposit = isDeposit;
 		this.before = before;
 		this.after = after;
+		time = LocalDateTime.now();
+		byUser = null;
+	}
+	
+	public Transaction(boolean isDeposit, double before, double after, String by) {
+		this (isDeposit, before, after);
+		byUser = by;
 	}
 	
 	public boolean isDeposit() {
@@ -42,6 +72,12 @@ public class Transaction implements Serializable{
 		history.append(String.format("%.2f", before));
 		history.append("\t\t");
 		history.append(String.format("%.2f", after));
+		history.append("\t\t");
+		history.append(time);
+		if (byUser != null) {
+			history.append('\t');
+			history.append(byUser);
+		}
 		return history.toString();
 	}
 

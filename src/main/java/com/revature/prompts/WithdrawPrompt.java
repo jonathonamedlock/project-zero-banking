@@ -28,9 +28,9 @@ public class WithdrawPrompt implements Prompt {
 			SelectorPrompt.getInstance().SelectAccount(t, s);
 			if (t.getActive().getAccount(SelectorPrompt.getInstance().getActive()) == null) {
 				System.out.println("Account with that number not found.");
-				return DepositPrompt.getInstance();
+				return WithdrawPrompt.getInstance();
 			}
-			if (!t.getActive().getAccount(SelectorPrompt.getInstance().getActive()).Withdraw(amount)) {
+			if (!t.Withdraw(amount, SelectorPrompt.getInstance().getActive())) {
 				System.out.println("Error withdrawing. Either attempted amount was negative or the total funds were insufficient.");
 			} else {
 				System.out.println("Withdraw success.");

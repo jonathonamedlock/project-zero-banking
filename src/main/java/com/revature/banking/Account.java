@@ -1,9 +1,5 @@
 package com.revature.banking;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,20 +14,34 @@ public class Account implements Serializable{
 	private AccountType type;
 	private List<Transaction> history;
 	
-	static final AtomicLong NEXT_ID;
+	private static final AtomicLong NEXT_ID;
 	
+	public AccountType getType() {
+		return type;
+	}
+
+	public void setType(AccountType type) {
+		this.type = type;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+	public void setHistory(List<Transaction> history) {
+		this.history = history;
+	}
+
 	static {
-		long l = 0;
-		// open file, read current id number from the file
-		try (BufferedReader buff = new BufferedReader(new FileReader("accID.txt"))) {
-			l = Long.parseLong(buff.readLine());
-			buff.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-		} 
-		NEXT_ID = new AtomicLong(l);
+		if (AccountNumberSerializer.getInstance().Read() == null) {
+			NEXT_ID = new AtomicLong(0);
+		} else {
+			NEXT_ID = AccountNumberSerializer.getInstance().Read();
+		}
 	}
 	
 	private final long id = NEXT_ID.getAndIncrement();
@@ -54,6 +64,7 @@ public class Account implements Serializable{
 		this(0.0, AccountType.CHECKING);
 	}
 	
+	@Deprecated
 	public boolean Deposit(double amount) {
 		if (amount < 0) {
 			return false;
@@ -62,11 +73,28 @@ public class Account implements Serializable{
 		return true;
 	}
 	
+	@Deprecated
 	public boolean Withdraw(double amount) {
 		if (amount > balance || amount < 0) {
 			return false;
 		}
 		history.add(new Transaction(false, balance, balance -= amount));
+		return true;
+	}
+	
+	public boolean Deposit(double amount, String by) {
+		if (amount < 0) {
+			return false;
+		}
+		history.add(new Transaction(true, balance, balance += amount, by));
+		return true;
+	}
+	
+	public boolean Withdraw(double amount, String by) {
+		if (amount > balance || amount < 0) {
+			return false;
+		}
+		history.add(new Transaction(false, balance, balance -= amount, by));
 		return true;
 	}
 	
@@ -100,4 +128,7 @@ public class Account implements Serializable{
 		return true;
 	}
 	
+	public static AtomicLong GetCurrentNextAccountNumber() {
+		return NEXT_ID;
+	}
 }

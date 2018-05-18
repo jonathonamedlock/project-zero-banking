@@ -7,15 +7,27 @@ import java.util.Map;
 
 public class Terminal {
 	private Map<Account, List<User>> userAccounts;
+	// Map<User,User> functions as a set that can easily pull out values
+	// based on a string, since user equality/hash is based on user name
 	private Map<User,User> users;
 	private User active;	
 	
 	public Terminal() {
 		// this is where start-up code goes.
 		// so this is the read-from-file logic
-		userAccounts = new HashMap<>();
-		users = new HashMap<>();
+		TerminalSerializer.getInstance().Read();
+		userAccounts = TerminalSerializer.getInstance().getUserAccounts();
+		users = TerminalSerializer.getInstance().getUsers();
+		if (users == null) {
+			users = new HashMap<>();
+			User admin = User.GetAdmin();
+			users.put(admin, admin);
+		}
+		if (userAccounts == null) {
+			userAccounts = new HashMap<>();
+		}		
 	}
+	
 	
 	public boolean LogIn(String name, String password) {
 		for (User u: users.keySet()) {
@@ -48,6 +60,8 @@ public class Terminal {
 				Account newAccount = new Account();
 				toAdd.addAccount(newAccount);
 				userAccounts.put(newAccount, userList);
+				TerminalSerializer.getInstance().WriteUsers(users);
+				AccountNumberSerializer.getInstance().Write(Account.GetCurrentNextAccountNumber());
 				return true;
 			}
 		}
@@ -64,6 +78,8 @@ public class Terminal {
 				Account newAccount = new Account(balance);
 				toAdd.addAccount(newAccount);
 				userAccounts.put(newAccount, userList);
+				TerminalSerializer.getInstance().WriteUsers(users);
+				AccountNumberSerializer.getInstance().Write(Account.GetCurrentNextAccountNumber());
 				return true;
 			}
 		}
@@ -82,6 +98,7 @@ public class Terminal {
 		
 		userAccounts.get(theAccount).add(user);
 		user.addAccount(theAccount);
+		TerminalSerializer.getInstance().WriteUsers(users);
 	}
 	
 	public String AddAccount() {
@@ -90,6 +107,8 @@ public class Terminal {
 		userList.add(active);
 		userAccounts.put(theAccount, userList);
 		active.addAccount(theAccount);
+		TerminalSerializer.getInstance().WriteUsers(users);
+		AccountNumberSerializer.getInstance().Write(Account.GetCurrentNextAccountNumber());
 		return Long.toString(theAccount.getAccountNumber());
 	}
 	
@@ -119,14 +138,18 @@ public class Terminal {
 		if (amount < 0.0) {
 			return false;
 		}
-		return active.getAccount(0).Deposit(amount);
+		boolean success = active.getAccount(0).Deposit(amount, active.getUsername());
+		TerminalSerializer.getInstance().WriteUsers(users);
+		return success;
 	}
 	
 	public boolean Withdraw(double amount) {
 		if (amount < 0.0) {
 			return false;
 		}
-		return active.getAccount(0).Withdraw(amount);
+		boolean success = active.getAccount(0).Withdraw(amount, active.getUsername());
+		TerminalSerializer.getInstance().WriteUsers(users);
+		return success;
 	}
 	
 	public String TransactionHistory() {
@@ -143,18 +166,24 @@ public class Terminal {
 		return history.toString();
 	}
 	
-	public String TransactionHistory(String username) {
-		if (!active.isAdmin()) {
-			return null;
-		}
-		return TransactionHistory(users.get(new User(username, "")).getAccount(0).getAccountNumber());
-	}
-	
 	public String TransactionHistory(String username, long accountNumber) {
 		if (!active.isAdmin()) {
 			return null;
 		}
-		return TransactionHistory(users.get(new User(username, "")).getAccount(accountNumber).getAccountNumber());
+		List<Transaction> trans = users.get(new User(username, "")).getAccount(accountNumber).getHistory();
+		StringBuilder history = new StringBuilder();
+		history.append("D/W\tPrevious\tAfter\n");
+		for (Transaction t : trans) {
+			history.append(t.toString() + "\n");
+		}
+		return history.toString();
+	}
+	
+	public String TransactionHistory(String username) {
+		if (!active.isAdmin()) {
+			return null;
+		}
+		return TransactionHistory(username, users.get(new User(username, "")).getAccount(0).getAccountNumber());
 	}
 	
 	public String getAccountNumbersForUser(String user, User u) {
@@ -181,5 +210,37 @@ public class Terminal {
 		if (active.isAdmin()) {
 			users.get(new User(user, "")).Promote();
 		}
+		TerminalSerializer.getInstance().WriteUsers(users);
+	}
+
+
+	public boolean Deposit(double amount, long accountNumber) {
+		boolean success = false;
+		for (int i = 0; i < active.AccountCount(); i++) {
+			if (active.getAccount(i).getAccountNumber() == accountNumber) {
+				if (userAccounts.get(active.getAccount(0)).size() == 1) {
+					success = active.getAccount(i).Deposit(amount, active.getUsername());
+				} else {
+					success = active.getAccount(i).Deposit(amount, active.getUsername());
+				}
+				TerminalSerializer.getInstance().WriteUsers(users);
+			}
+		}
+		return success;
+	}
+	
+	public boolean Withdraw(double amount, long accountNumber) {
+		boolean success = false;
+		for (int i = 0; i < active.AccountCount(); i++) {
+			if (active.getAccount(i).getAccountNumber() == accountNumber) {
+				if (userAccounts.get(active.getAccount(0)).size() == 1) {
+					success = active.getAccount(i).Withdraw(amount, active.getUsername());
+				} else {
+					success = active.getAccount(i).Withdraw(amount, active.getUsername());
+				}
+				TerminalSerializer.getInstance().WriteUsers(users);
+			}
+		}
+		return success;
 	}
 }
