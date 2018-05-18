@@ -64,26 +64,8 @@ public class Account implements Serializable{
 		this(0.0, AccountType.CHECKING);
 	}
 	
-	@Deprecated
-	public boolean Deposit(double amount) {
-		if (amount < 0) {
-			return false;
-		}
-		history.add(new Transaction(true, balance, balance += amount));
-		return true;
-	}
-	
-	@Deprecated
-	public boolean Withdraw(double amount) {
-		if (amount > balance || amount < 0) {
-			return false;
-		}
-		history.add(new Transaction(false, balance, balance -= amount));
-		return true;
-	}
-	
 	public boolean Deposit(double amount, String by) {
-		if (amount < 0) {
+		if (amount <= 0) {
 			return false;
 		}
 		history.add(new Transaction(true, balance, balance += amount, by));
@@ -91,7 +73,7 @@ public class Account implements Serializable{
 	}
 	
 	public boolean Withdraw(double amount, String by) {
-		if (amount > balance || amount < 0) {
+		if (amount > balance || amount <= 0) {
 			return false;
 		}
 		history.add(new Transaction(false, balance, balance -= amount, by));

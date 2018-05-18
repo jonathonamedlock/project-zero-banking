@@ -9,11 +9,10 @@ public class Operator {
 	public static void main(String[] args) {
 		// This is where the prompts go. 
 		// Pass them the Terminal to handle
-		Terminal theTerminal = new Terminal();
 		Scanner scan = new Scanner (System.in);
 		Prompt p = LoginRegisterPrompt.getInstance();
 		while (true) {
-			p = p.run(theTerminal, scan);
+			p = p.run(Terminal.getInstance(), scan);
 		}
 	}
 }

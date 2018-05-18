@@ -20,7 +20,7 @@ public class DepositPrompt implements Prompt {
 		double amount = Double.parseDouble(s.nextLine());
 		if (!t.HasMultiple()) {
 			if(!t.Deposit(amount)) {
-				System.out.println("Error depositing. Attempted amount was negative.");
+				System.out.println("Error depositing. Attempted amount was zero or negative.");
 			} else {
 				System.out.println("Deposit success.");
 			}
@@ -31,7 +31,7 @@ public class DepositPrompt implements Prompt {
 				return DepositPrompt.getInstance();
 			}
 			if (!t.Deposit(amount, SelectorPrompt.getInstance().getActive())) {
-				System.out.println("Error depositing. Attempted amount was negative.");
+				System.out.println("Error depositing. Attempted amount was zero or negative.");
 			} else {
 				System.out.println("Deposit success.");
 			}

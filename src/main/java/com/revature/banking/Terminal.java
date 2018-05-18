@@ -11,8 +11,9 @@ public class Terminal {
 	// based on a string, since user equality/hash is based on user name
 	private Map<User,User> users;
 	private User active;	
+	private static final Terminal terminal = new Terminal();
 	
-	public Terminal() {
+	private Terminal() {
 		// this is where start-up code goes.
 		// so this is the read-from-file logic
 		TerminalSerializer.getInstance().Read();
@@ -26,6 +27,10 @@ public class Terminal {
 		if (userAccounts == null) {
 			userAccounts = new HashMap<>();
 		}		
+	}
+	
+	public static Terminal getInstance() {
+		return terminal;
 	}
 	
 	
@@ -125,7 +130,7 @@ public class Terminal {
 	
 	public String ViewBalance() {
 		if (active.AccountCount() == 1) {
-			return String.format("%.2f", active.getAccount(0).getBalance());
+			return String.format(active.getAccount(0).getAccountNumber() + ": " + "%.2f", active.getAccount(0).getBalance());
 		}
 		StringBuilder accountData = new StringBuilder();
 		for (int i = 0; i < active.AccountCount(); i++) {
@@ -184,6 +189,20 @@ public class Terminal {
 			return null;
 		}
 		return TransactionHistory(username, users.get(new User(username, "")).getAccount(0).getAccountNumber());
+	}
+	
+	public String DirectTransactionHistory(long accountNumber) {
+		for (Account a : userAccounts.keySet()) {
+			if (a.getAccountNumber() == accountNumber) {
+				StringBuilder history = new StringBuilder();
+				history.append("D/W\tPrevious\tAfter\n");
+				for (Transaction t : a.getHistory()) {
+					history.append(t.toString() + "\n");
+				}
+				return history.toString();
+			}
+		}
+		return null;
 	}
 	
 	public String getAccountNumbersForUser(String user, User u) {

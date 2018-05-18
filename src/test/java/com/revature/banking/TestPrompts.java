@@ -13,10 +13,10 @@ public class TestPrompts {
 
 	@Test
 	public void test() {
-		Terminal t = new Terminal();
+		
 		Prompt p = LoginRegisterPrompt.getInstance();
 		while (true) {
-			p = p.run(t, new Scanner(System.in));
+			p = p.run(Terminal.getInstance(), new Scanner(System.in));
 		}
 	}
 

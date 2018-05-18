@@ -20,7 +20,7 @@ public class WithdrawPrompt implements Prompt {
 		double amount = Double.parseDouble(s.nextLine());
 		if (t.getActive().AccountCount() == 1) {
 			if(!t.Withdraw(amount)) {
-				System.out.println("Error withdrawing. Either attempted amount was negative or the total funds were insufficient.");
+				System.out.println("Error withdrawing. Either attempted amount was zero or negative or the total funds were insufficient.");
 			} else {
 				System.out.println("Withdraw success.");
 			}
@@ -31,7 +31,7 @@ public class WithdrawPrompt implements Prompt {
 				return WithdrawPrompt.getInstance();
 			}
 			if (!t.Withdraw(amount, SelectorPrompt.getInstance().getActive())) {
-				System.out.println("Error withdrawing. Either attempted amount was negative or the total funds were insufficient.");
+				System.out.println("Error withdrawing. Either attempted amount was zero or negative or the total funds were insufficient.");
 			} else {
 				System.out.println("Withdraw success.");
 			}

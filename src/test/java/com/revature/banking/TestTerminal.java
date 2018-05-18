@@ -8,7 +8,7 @@ public class TestTerminal {
 
 	@Test
 	public void TestNewUser() {
-		Terminal t = new Terminal();
+		Terminal t = Terminal.getInstance();
 		assertTrue(t.NewUser("User1", "Password1", "Password1"));
 		assertFalse(t.NewUser("User1", "Password1", "Password1"));
 		assertTrue(t.NewUser("User2", "Password1", "Password1", 100));
@@ -18,7 +18,7 @@ public class TestTerminal {
 	
 	@Test
 	public void TestLogIn() {
-		Terminal t = new Terminal();
+		Terminal t = Terminal.getInstance();
 		t.NewUser("User1", "Password1", "Password1");
 		assertNull(t.getActive());
 		t.LogIn("User1", "Password1");
@@ -29,7 +29,7 @@ public class TestTerminal {
 
 	@Test
 	public void TestViewBalance() {
-		Terminal t = new Terminal();
+		Terminal t = Terminal.getInstance();
 		t.NewUser("User1", "Password1", "Password1");
 		t.NewUser("User2", "Password2", "Password2", 300);
 		t.LogIn("User1", "Password1");
@@ -40,7 +40,7 @@ public class TestTerminal {
 	
 	@Test
 	public void TestWithdraw() {
-		Terminal t = new Terminal();
+		Terminal t = Terminal.getInstance();
 		t.NewUser("User1", "Password1", "Password1", 100);
 		t.LogIn("User1", "Password1");
 		assertTrue(t.Withdraw(1));
@@ -53,7 +53,7 @@ public class TestTerminal {
 	
 	@Test
 	public void TestDeposit() {
-		Terminal t = new Terminal();
+		Terminal t = Terminal.getInstance();
 		t.NewUser("User1", "Password1", "Password1", 100);
 		t.LogIn("User1", "Password1");
 		assertTrue(t.Deposit(1));

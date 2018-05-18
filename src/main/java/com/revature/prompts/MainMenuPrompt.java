@@ -19,7 +19,7 @@ public class MainMenuPrompt implements Prompt{
 	public Prompt run(Terminal t, Scanner s) {
 		System.out.print("(D)eposit, (W)ithdraw, (C)heck balance, (V)iew history, (A)dd new account, e(X)it");
 		if (t.getActive().isAdmin()) {
-			System.out.print("\nv(I)ew a user's history, add (U)ser to existing account, (P)romote user to admin: ");
+			System.out.print("\nv(I)ew a user account's history, add (U)ser to existing account, (P)romote user to admin: ");
 		} else {
 			System.out.print(": ");
 		}
