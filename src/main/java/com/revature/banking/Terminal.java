@@ -125,6 +125,9 @@ public class Terminal {
 	}
 	
 	public boolean HasMultiple(String user) {
+		if (!users.containsKey(new User(user, ""))) {
+			return false;
+		}
 		return users.get(new User(user,"")).AccountCount() > 1;
 	}
 	

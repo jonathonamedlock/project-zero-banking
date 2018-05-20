@@ -18,6 +18,10 @@ public class ViewPrompt implements Prompt {
 	public Prompt run(Terminal t, Scanner s) {
 		System.out.print("View history of which user: ");
 		String user = s.nextLine();
+		if (!t.ValidUser(user)) {
+			System.out.println("Invalid user name");
+			return MainMenuPrompt.getInstance();
+		}
 		if (!t.HasMultiple(user)) {
 			System.out.println(t.TransactionHistory(user));
 		} else {

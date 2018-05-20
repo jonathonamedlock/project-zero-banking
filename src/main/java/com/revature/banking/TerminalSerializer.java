@@ -16,6 +16,7 @@ public class TerminalSerializer{
 	private static final TerminalSerializer serializer = new TerminalSerializer();
 	private Map<User, User> users;
 	private Map<Account, List<User>> accounts;
+
 	
 	private TerminalSerializer() {
 		users = new HashMap<>();
